@@ -1,0 +1,897 @@
+openapi: 3.0.0
+info:
+  title: Convert and Recognition Studio
+  description: |-
+    <b>C&R Studio</b>. Is a simple, smart and elegant tool with a lot utilities to manipulate multimedia files that are used in daily life. This is the only Converter that has such a wide range of unit conversion utilities with very simple and easy to use interface.<br><hr> <ul>
+      <sub>Developed for Jala University (2023) by:</sub>
+      <b><h3>AT19 Team - International</h3></b>
+      <li>&#127463&#127476 Carolina Vacaflor Nina</li>
+      <li>&#127462&#127479 Celeste Palet Arias</li>
+      <li>&#127463&#127476 Daniel Villarroel Chanlopkova</li>
+      <li>&#127463&#127476 David Garnica Morales</li>
+      <li>&#127463&#127476 Denisse Cordoba Sanabria</li>
+      <li>&#127464&#127476 Fabian Cabrejo Arias</li>
+      <li>&#127464&#127476 Leonardo Pacheco Carrillo</li>
+      <li>&#127463&#127476 Maria Mamani Cruz</li>
+      <li>&#127463&#127476 Martin Alvarez Alcoreza</li>
+      <li>&#127462&#127479 Rocio Morales</li>
+      <li>&#127463&#127476 Roger Renjifo Tarquino</li>
+      <li>&#127463&#127476 Selmi Muraña Cayo</li>
+      <li>&#127463&#127476 Telma Rios Fernandez</li>
+      <br><sub>Under supervision of the Trainer:</sub>
+      <br>Paolo Sandoval
+    </ul> <hr>
+  contact:
+    name: AT19 Support
+    url: http://www.converter.com/support
+    email: support@jala.university
+  version: 1.0.11
+servers:
+- url: https://virtserver.swaggerhub.com/AT19-Jala.University/Converter_Studio/1.0.11
+  description: SwaggerHub API Auto Mocking
+- url: http://127.0.0.1:5000/
+  description: Converter
+tags:
+- name: Download
+  description: Utility to download files from Converter server.
+- name: Video Converter
+  description: Converts a video to a sequence of images and returns a compressed ZIP
+    file.
+  externalDocs:
+    description: Go to our web site
+    url: http://converter.com/video
+- name: Image Converter
+  description: Converts any image format into another image format.
+  externalDocs:
+    description: Go to our web site
+    url: http://converter.com/image
+- name: PDF Utility
+  description: Converts a PDF format file into a specified image format and viceversa.
+  externalDocs:
+    description: Go to our web site
+    url: http://converter.com/pdf
+- name: Audio Converter
+  description: Converts audio format file into another audio format and other options.
+  externalDocs:
+    description: Go to our web site
+    url: http://converter.com/audio
+- name: Text Translator
+  description: It Translates any text into specified language.
+- name: Get Metadata
+  description: Gets metadata information from any file.
+paths:
+  /download:
+    get:
+      tags:
+      - Download
+      summary: Downloads a file.
+      description: ""
+      operationId: get_download
+      parameters:
+      - name: file_name
+        in: query
+        description: 'Please choose the file to download:'
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: binary
+          example: !!binary |-
+            Wm1sc1pWOTBiMTlrYjNkdWJHOWhaQzU2YVhBPQ==
+      responses:
+        "200":
+          description: Download link was generated succesfuly.
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "404":
+          description: File not found in this server.
+      x-openapi-router-controller: swagger_server.controllers.download_controller
+  /videotoimage/zip:
+    post:
+      tags:
+      - Video Converter
+      summary: Extracts and compress images from a video into a zip file.
+      description: ""
+      operationId: post_videotoimages
+      requestBody:
+        description: "Choose the video to convert, the output format and the number\
+          \ of images per second."
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/videotoimages'
+        required: true
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.video_converter_controller
+  /videotovideo:
+    post:
+      tags:
+      - Video Converter
+      summary: Converts video format.
+      description: ""
+      operationId: post_videotovideo
+      requestBody:
+        description: Choose the video to convert and the output format.
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/videotovideo'
+        required: true
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.video_converter_controller
+  /imagetoimage:
+    post:
+      tags:
+      - Image Converter
+      summary: Convert image to another type of image
+      description: ""
+      operationId: post_imagetoimages
+      requestBody:
+        description: 'Choose the image file to converrt and specify the output format:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/image'
+        required: true
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.image_converter_controller
+  /imageflip:
+    post:
+      tags:
+      - Image Converter
+      summary: Converts an image into a flipped image.
+      description: ""
+      operationId: post_imageflip
+      requestBody:
+        description: 'Please insert the image to flip:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/image'
+        required: true
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.image_converter_controller
+  /imagebw:
+    post:
+      tags:
+      - Image Converter
+      summary: Converts an image into black and white image
+      description: ""
+      operationId: post_imagebw
+      requestBody:
+        description: 'Please upload an image to convert to black and white:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/image'
+        required: true
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.image_converter_controller
+  /imageresize:
+    post:
+      tags:
+      - Image Converter
+      summary: Resizes an image
+      description: ""
+      operationId: post_imageresize
+      requestBody:
+        description: 'Choose an image to resize:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imageresize'
+        required: true
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.image_converter_controller
+  /imagerotate:
+    post:
+      tags:
+      - Image Converter
+      summary: Rotates an image specified n-degrees.
+      description: ""
+      operationId: post_imagerotate
+      requestBody:
+        description: 'Choose an image to rotate:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imagerotate'
+        required: true
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.image_converter_controller
+  /imagetopdf:
+    post:
+      tags:
+      - PDF Utility
+      summary: Converts an image into PDF format file.
+      description: ""
+      operationId: post_imagetopdf
+      requestBody:
+        description: 'Please upload an image to covert:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imagetopdf'
+        required: true
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.pdf_utility_controller
+  /imagetotext:
+    post:
+      tags:
+      - Image Converter
+      summary: Image to text
+      description: Converts an image into txt file
+      operationId: post_imagetotext
+      requestBody:
+        description: 'Please upload an image to covert:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imagetotext'
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.image_converter_controller
+  /pdftoimage:
+    post:
+      tags:
+      - PDF Utility
+      summary: Converts PDF file into image.
+      description: ""
+      operationId: post_pdftoimage
+      requestBody:
+        description: 'Please upload a PDF file to convert:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/pdftoimage'
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.pdf_utility_controller
+  /audiotoaudio:
+    post:
+      tags:
+      - Audio Converter
+      summary: Converts audio file to another of audio format file.
+      description: ""
+      operationId: post_audiotoaudio
+      requestBody:
+        description: 'Please insert the audio file to convert:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/audiotoaudio'
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.audio_converter_controller
+  /audioincreasevolume:
+    post:
+      tags:
+      - Audio Converter
+      summary: Get converted type of audio file with increased volume
+      description: Convert inserted audio file to another type of audio file with
+        increased volume
+      operationId: post_audioincreasevolume
+      requestBody:
+        description: 'Please insert the audio file to convert and increased volume:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/audioincreasedvolume'
+        required: true
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.audio_converter_controller
+  /audioextractaudio:
+    post:
+      tags:
+      - Audio Converter
+      summary: Extracts an audio file from a video file
+      description: ""
+      operationId: post_audioextractaudio
+      requestBody:
+        description: 'Please insert the video file to extract the audio:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/audioextractaudio'
+        required: true
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.audio_converter_controller
+  /audiomixaudio:
+    post:
+      tags:
+      - Audio Converter
+      summary: Merges two audio files in one audio file.
+      description: ""
+      operationId: post_audiomixaudio
+      requestBody:
+        description: 'Please insert the audio files to merge:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/audiomixaudio'
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.audio_converter_controller
+  /texttranslator:
+    post:
+      tags:
+      - Text Translator
+      summary: Translates a text to any language
+      description: ""
+      operationId: post_text_translator
+      requestBody:
+        description: 'Please write a text you want translate:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/texttranslator'
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "\"Hola, hoy seré su maestro de ceremonias.\""
+                x-content-type: text/plain
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.text_translator_controller
+  /metadatageter:
+    post:
+      tags:
+      - Get Metadata
+      summary: Gets metadata from a file
+      description: ""
+      operationId: post_metadatageter
+      requestBody:
+        description: 'Please upload a file:'
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/metadatageter'
+      responses:
+        "200":
+          description: Convertion process finished succesfully
+          content:
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/download'
+        "400":
+          description: Invalid supplied file.
+        "404":
+          description: File not found.
+        "500":
+          description: Lost communication with the server.
+      x-openapi-router-controller: swagger_server.controllers.get_metadata_controller
+components:
+  schemas:
+    download:
+      required:
+      - file_name
+      type: string
+      example: '"http://converter.com/download?file_name=file_to_download.zip"'
+    videotoimages:
+      required:
+      - fps
+      - input_file
+      - output_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose the video to convert:'
+          format: binary
+        output_file:
+          type: string
+          description: 'Choose the output format:'
+          example: jpg
+          enum:
+          - jpg
+          - png
+          - gif
+          - bmp
+          - tiff
+        fps:
+          type: string
+          description: "Specify the number of images per second <i>(Recommended: 1)</i>:"
+          example: "1"
+    videotovideo:
+      required:
+      - input_file
+      - output_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose the video to convert:'
+          format: binary
+          example: !!binary |-
+            VUc5c2JHbDBiM011YlhBMA==
+        output_file:
+          type: string
+          description: 'Choose the output video format:'
+          enum:
+          - avi
+          - mov
+          - ogg
+          - mpg
+          default: avi
+    image:
+      required:
+      - input_file
+      - output_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose image to convert:'
+          format: binary
+          example: !!binary |-
+            VUdGMGFYUnZjeTV3Ym1jPQ==
+        output_file:
+          type: string
+          description: 'Choose output format:'
+          enum:
+          - jpg
+          - png
+          - gif
+          - bmp
+          - tiff
+          default: jpg
+    imageresize:
+      required:
+      - input_file
+      - new_size
+      - output_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose the image to resize:'
+          format: binary
+          example: !!binary |-
+            VUc5c2JHbDBiM011YlhBMA==
+        output_file:
+          type: string
+          description: 'Choose the output format:'
+          example: jpg
+          enum:
+          - jpg
+          - png
+          - gif
+          - bmp
+          - tiff
+        new_size:
+          type: string
+          description: "Specify the new size <i>(Percentage: 25 or size 640x480)</i>:"
+          example: "25"
+    imagerotate:
+      required:
+      - grades
+      - input_file
+      - output_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose the image to rotate:'
+          format: binary
+          example: !!binary |-
+            VUc5c2JHbDBiM011YlhBMA==
+        output_file:
+          type: string
+          description: 'Choose the output format:'
+          example: jpg
+          enum:
+          - jpg
+          - png
+          - gif
+          - bmp
+          - tiff
+        grades:
+          type: string
+          description: 'Specify the number of degrees to rotate:'
+          example: "30"
+    imagetopdf:
+      required:
+      - input_file
+      - lang
+      - output_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose image file to convert:'
+          format: binary
+          example: !!binary |-
+            VUdGMGFYUnZjeTV3Ym1jPQ==
+        output_file:
+          type: string
+          example: pdf
+          enum:
+          - pdf
+        lang:
+          type: string
+          description: "Language encoding <i>(default: \"eng\", select \"spa\" to\
+            \ include latin special characters)</i>:"
+          example: eng
+          enum:
+          - eng
+          - spa
+          - eng+spa
+    imagetotext:
+      required:
+      - input_file
+      - lang
+      - output_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose image file to convert:'
+          format: binary
+          example: !!binary |-
+            VUdGMGFYUnZjeTV3Ym1jPQ==
+        output_file:
+          type: string
+          example: txt
+          enum:
+          - txt
+        lang:
+          type: string
+          description: "Language encoding <i>(default: \"eng\", select \"spa\" to\
+            \ include latin special characters)</i>:"
+          example: eng
+          enum:
+          - eng
+          - spa
+          - eng+spa
+    pdftoimage:
+      required:
+      - input_file
+      - output_file
+      - quality
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose PDF file to convert:'
+          format: binary
+          example: !!binary |-
+            VUdGMGFYUnZjeTV3WkdZPQ==
+        output_file:
+          type: string
+          description: 'Choose the output format:'
+          example: jpg
+          enum:
+          - jpg
+          - png
+          - gif
+          - bmp
+          - tiff
+        quality:
+          maximum: 100
+          minimum: 1
+          type: integer
+          description: "Specify the % quality of the generated image <i>(Recommended:\
+            \ 90)</i>:"
+          example: 90
+    audiotoaudio:
+      required:
+      - input_file
+      - output_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose audio file to convert:'
+          format: binary
+          example: !!binary |-
+            VUdGMGFYUnZjeTUzWVhZPQ==
+        output_file:
+          type: string
+          description: 'Choose the output format:'
+          example: mp3
+          enum:
+          - mp3
+          - wav
+          - ogg
+          - flac
+          - wma
+    audioincreasedvolume:
+      required:
+      - input_file
+      - multiplier
+      - output_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose audio file to convert:'
+          format: binary
+          example: !!binary |-
+            VUdGMGFYUnZjeTUzWVhZPQ==
+        output_file:
+          type: string
+          description: 'Choose the output format:'
+          example: mp3
+          enum:
+          - mp3
+          - wav
+          - ogg
+          - flac
+          - wma
+        multiplier:
+          type: number
+          description: "Specify the multiplier <i>(To increase volumen write a value\
+            \ greater then 0, to decrease, the value should be lower than 0)</i>:"
+          example: 2
+    audioextractaudio:
+      required:
+      - input_file
+      - output_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          description: 'Choose video file to convert:'
+          format: binary
+          example: !!binary |-
+            VUdGMGFYUnZjeTUzWVhZPQ==
+        output_file:
+          type: string
+          description: 'Choose the output format:'
+          example: mp3
+          enum:
+          - mp3
+          - wav
+          - ogg
+          - flac
+          - wma
+    audiomixaudio:
+      required:
+      - input_file_1
+      - input_file_2
+      - output_file
+      type: object
+      properties:
+        input_file_1:
+          type: string
+          description: 'Choose an audio file:'
+          format: binary
+          example: !!binary |-
+            VUdGMGFYUnZjeTV0Y0RNPQ==
+        input_file_2:
+          type: string
+          description: 'Choose another audio file:'
+          format: binary
+          example: !!binary |-
+            VUc5c2JHbDBiM011YlhBeg==
+        output_file:
+          type: string
+          description: 'Choose the output format:'
+          example: mp3
+          enum:
+          - mp3
+          - wav
+          - ogg
+          - flac
+          - wma
+    texttranslator:
+      required:
+      - language
+      - text
+      type: object
+      properties:
+        text:
+          type: string
+          description: 'Write or paste text to translate:'
+          example: "Hello, today I\\'m gonna be your Scrum Master."
+        language:
+          type: string
+          description: 'Select the destination language:'
+          example: es
+          enum:
+          - Spanish
+          - English
+          - Mexican
+          x-enumNames:
+          - sp
+          - eng
+          - mx
+    metadatageter:
+      required:
+      - input_file
+      type: object
+      properties:
+        input_file:
+          type: string
+          format: binary
+          example: !!binary |-
+            UTJGMGMyRnVaRVJ2WjNNdVlYWnA=
+  responses:
+    response200:
+      description: Convertion process finished succesfully
+      content:
+        application/zip:
+          schema:
+            $ref: '#/components/schemas/download'
+    response400:
+      description: Invalid supplied file.
+    response404:
+      description: File not found.
+    response500:
+      description: Lost communication with the server.
+
